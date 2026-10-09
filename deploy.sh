@@ -1,3 +1,17 @@
+
+#!/bin/bash
+
+# Настройки
+REPO="git@github.com:goshva/archai.git"
+PROJECT_DIR="archai-landing"
+BRANCH="main"
+
+# Создаём папку и переходим в неё
+mkdir -p "$PROJECT_DIR"
+cd "$PROJECT_DIR" || exit 1
+
+# Записываем index.html (содержимое из части 1)
+cat > index.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -21,7 +35,6 @@
         }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-        /* Header */
         header {
             padding: 32px 0;
             display: flex;
@@ -41,7 +54,6 @@
         }
         .contacts-top a:hover { color: var(--accent); }
 
-        /* Hero */
         .hero {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -80,7 +92,6 @@
             display: block;
         }
 
-        /* Unique selling points */
         .usp {
             background: var(--card-bg);
             border-radius: 32px;
@@ -112,7 +123,6 @@
         }
         .usp-item p { color: #555; font-size: 0.95rem; }
 
-        /* Before / After */
         .portfolio {
             padding: 40px 0 80px;
         }
@@ -159,7 +169,6 @@
             font-size: 0.95rem;
         }
 
-        /* Contacts */
         .contacts {
             background: #2c2c2c;
             color: #fff;
@@ -233,8 +242,7 @@
                 <p>Загрузите фото бетонной коробки — получите готовую визуализацию с реальным видом за окном, в разных стилях и в любое время суток. Без дизайнера и 3D-моделирования.</p>
             </div>
             <div class="hero-image">
-                <!-- Фото "до" -->
-                <img src="./photo_1.jpg" alt="Фото коробки квартиры">
+                <img src="photo-1.jpg" alt="Фото коробки квартиры">
             </div>
         </section>
 
@@ -267,24 +275,22 @@
             <div class="ba-grid">
                 <div class="ba-card">
                     <div class="label">До</div>
-                    <img src="./photo_1.jpg" alt="Коробка квартиры">
+                    <img src="photo-1.jpg" alt="Коробка квартиры">
                     <div class="desc">Фото бетонной коробки с окном</div>
                 </div>
                 <div class="ba-card">
                     <div class="label">После</div>
-                    <!-- Фото "после" (ваш второй файл) -->
-                    <img src="./photo_2.jpg" alt="Интерьер в стиле бохо">
+                    <img src="photo-2.jpg" alt="Интерьер в стиле бохо">
                     <div class="desc">Бохо-стиль, тёплый вечер, реальный вид за окном</div>
                 </div>
                 <div class="ba-card">
                     <div class="label">До</div>
-                    <img src="./photo_1.jpg" alt="Коробка квартиры">
+                    <img src="photo-1.jpg" alt="Коробка квартиры">
                     <div class="desc">Та же коробка</div>
                 </div>
                 <div class="ba-card">
                     <div class="label">После</div>
-                    <!-- Фото "после" (ваш третий файл) -->
-                    <img src="./5W0Z8Yx/photo_3.jpg" alt="Интерьер в современном стиле">
+                    <img src="photo-3.jpg" alt="Интерьер в современном стиле">
                     <div class="desc">Современный минимализм, дневной свет</div>
                 </div>
             </div>
@@ -307,3 +313,18 @@
     </div>
 </body>
 </html>
+HTMLEOF
+
+# Инициализируем git
+git init
+git checkout -b "$BRANCH" 2>/dev/null || git checkout "$BRANCH"
+
+# Добавляем удалённый репозиторий (если ещё не добавлен)
+git remote add origin "$REPO" 2>/dev/null || git remote set-url origin "$REPO"
+
+# Коммитим и пушим
+git add index.html
+git commit -m "feat: add landing page for ArchAI interior cards"
+git push -u origin "$BRANCH"
+
+echo "✅ Готово! Лендинг запушен в $REPO (ветка $BRANCH)"
