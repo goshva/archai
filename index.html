@@ -513,7 +513,7 @@ footer a:hover{color:var(--ink)}
           <button type="button" class="btn btn-mail" id="sendMail">Отправить на почту</button>
         </div>
         <div class="err" id="err"></div>
-        <p class="fine">На телефоне фото уйдёт сразу вместе с заявкой. На компьютере текст заявки скопируется автоматически — останется вставить его в чат и прикрепить фото.</p>
+        <p class="fine">Фото и заявка уйдут нам сразу — ничего прикреплять вручную не нужно. Укажите телефон или @ник, чтобы мы прислали результат.</p>
       </aside>
     </div>
   </div>
@@ -569,6 +569,28 @@ footer a:hover{color:var(--ink)}
 const TG_USERNAME = "archai";            // ник в Telegram без @
 const EMAIL       = "hello@archai.ru";   // почта для заявок
 const PRICE       = "990 ₽";
+
+/* Заявки с фото уходят прямо в Telegram-бота.
+ * ВНИМАНИЕ: токен виден в исходном коде страницы всем посетителям (GitHub Pages — только статика).
+ * Это компромисс для теста. Для продакшена смените токен через @BotFather (/revoke)
+ * и перенесите отправку на сервер/облачную функцию. */
+const TG_BOT_TOKEN = "8431645174:AAGTV2Xg4mpOKiqaKHR73pVBBKUDHm0D_yo";
+const TG_CHAT_ID   = "190404167";        // @goshva13 — из /start боту @aivintesting1986bot
+
+async function tgUpload(method, field, file, caption){
+  const fd = new FormData();
+  fd.append('chat_id', TG_CHAT_ID);
+  fd.append(field, file, file.name || 'photo.jpg');
+  fd.append('caption', caption.slice(0, 1024)); // лимит подписи в Telegram
+  const r = await fetch('https://api.telegram.org/bot' + TG_BOT_TOKEN + '/' + method, {method:'POST', body:fd});
+  const j = await r.json().catch(() => ({}));
+  if (!j.ok) throw new Error(j.description || ('HTTP ' + r.status));
+}
+// sendPhoto не принимает HEIC и файлы > 10 МБ — тогда шлём как документ
+async function sendToBot(file, text){
+  try { await tgUpload('sendPhoto', 'photo', file, text); }
+  catch(e) { console.warn('[ArchAI] sendPhoto failed, retry as document:', e); await tgUpload('sendDocument', 'document', file, text); }
+}
 
 /* header */
 const hdr = document.getElementById('hdr');
@@ -681,10 +703,25 @@ async function copy(t){
 const isTouch = matchMedia('(pointer:coarse)').matches;
 
 /* Telegram */
-document.getElementById('sendTg').addEventListener('click', async () => {
+const sendTgBtn = document.getElementById('sendTg');
+sendTgBtn.addEventListener('click', async () => {
   if (!check()) return;
+  if (!data().contact) { showErr('Укажите телефон или @ник — чтобы мы могли прислать результат'); document.getElementById('contact').focus(); return; }
   const text = message();
-  // на телефоне — системное «Поделиться»: фото и текст уходят одним сообщением
+  // основной путь — фото и заявка уходят прямо в бота
+  const label = sendTgBtn.innerHTML;
+  sendTgBtn.disabled = true; sendTgBtn.textContent = 'Отправляем…';
+  try {
+    await sendToBot(photo, text);
+    toast('Заявка отправлена! Мы свяжемся с вами в ближайшее время.');
+    return;
+  } catch(e) {
+    console.warn('[ArchAI] Telegram bot send failed:', e);
+    toast('Не удалось отправить автоматически — отправьте заявку вручную');
+  } finally {
+    sendTgBtn.disabled = false; sendTgBtn.innerHTML = label;
+  }
+  // запасной путь: на телефоне — системное «Поделиться»: фото и текст уходят одним сообщением
   if (isTouch && navigator.canShare && navigator.canShare({files:[photo]})) {
     try {
       await copy(text);
