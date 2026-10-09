@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArchAI — Интерьерные карточки из фото коробки</title>
+    <style>
+        :root {
+            --bg: #faf7f2;
+            --text: #2c2c2c;
+            --accent: #b86b4b;
+            --card-bg: #ffffff;
+            --shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        header {
+            padding: 32px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .logo { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; }
+        .logo span { color: var(--accent); }
+        .contacts-top a {
+            color: var(--text);
+            text-decoration: none;
+            margin-left: 24px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .contacts-top a:hover { color: var(--accent); }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+            padding: 40px 0 80px;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1.2;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+        .hero h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+        .hero p {
+            font-size: 1.15rem;
+            color: #555;
+            margin-bottom: 32px;
+            max-width: 480px;
+        }
+        .hero-image {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            aspect-ratio: 4/3;
+            background: #ddd;
+        }
+        .hero-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .usp {
+            background: var(--card-bg);
+            border-radius: 32px;
+            padding: 56px 48px;
+            margin: 40px 0 80px;
+            box-shadow: var(--shadow);
+        }
+        .usp h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .usp .sub {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .usp-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 32px;
+        }
+        .usp-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .usp-item p { color: #555; font-size: 0.95rem; }
+
+        .portfolio {
+            padding: 40px 0 80px;
+        }
+        .portfolio h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .portfolio .sub {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .ba-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+        .ba-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        .ba-card:hover { transform: translateY(-4px); }
+        .ba-card .label {
+            padding: 16px 20px 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--accent);
+        }
+        .ba-card img {
+            width: 100%;
+            display: block;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+        }
+        .ba-card .desc {
+            padding: 12px 20px 20px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .contacts {
+            background: #2c2c2c;
+            color: #fff;
+            border-radius: 32px;
+            padding: 64px 48px;
+            margin: 40px 0 80px;
+            text-align: center;
+        }
+        .contacts h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .contacts p {
+            color: #aaa;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        .contacts-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+        }
+        .contacts-links a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 14px 32px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px;
+            transition: all 0.2s;
+        }
+        .contacts-links a:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #999;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0ddd8;
+        }
+
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; gap: 32px; }
+            .ba-grid { grid-template-columns: 1fr; }
+            .usp { padding: 32px 24px; }
+            .contacts { padding: 40px 24px; }
+            .contacts-top a { margin-left: 16px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Arch<span>AI</span></div>
+            <div class="contacts-top">
+                <a href="tel:+79990000000">+7 999 000-00-00</a>
+                <a href="mailto:hello@archai.ru">hello@archai.ru</a>
+                <a href="https://t.me/archai" target="_blank">Telegram</a>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div>
+                <h1>Интерьерные карточки из <em>фото коробки</em> за 15 минут</h1>
+                <p>Загрузите фото бетонной коробки — получите готовую визуализацию с реальным видом за окном, в разных стилях и в любое время суток. Без дизайнера и 3D-моделирования.</p>
+            </div>
+            <div class="hero-image">
+                <img src="photo-1.jpg" alt="Фото коробки квартиры">
+            </div>
+        </section>
+
+        <section class="usp">
+            <h2>Что мы делаем</h2>
+            <p class="sub">Уникальная технология: сохраняем реальный вид из вашего окна и меняем всё остальное.</p>
+            <div class="usp-grid">
+                <div class="usp-item">
+                    <h3>🌅 Реальный вид за окном</h3>
+                    <p>Не просто абстрактный пейзаж — мы переносим именно ваш вид из окна: город, двор, закат или рассвет. В разное время суток.</p>
+                </div>
+                <div class="usp-item">
+                    <h3>🎨 Разные стили</h3>
+                    <p>Скандинавский, лофт, минимализм, прованс, современная классика — одна коробка, десятки вариантов дизайна.</p>
+                </div>
+                <div class="usp-item">
+                    <h3>⚡ Быстро</h3>
+                    <p>От фото до готовой карточки — 15 минут. Идеально для агентов, застройщиков и собственников.</p>
+                </div>
+                <div class="usp-item">
+                    <h3>📐 Точность</h3>
+                    <p>Сохраняем геометрию помещения, расположение окон и радиаторов. Никаких искажений.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="portfolio">
+            <h2>Примеры работ</h2>
+            <p class="sub">Слева — исходная коробка, справа — результат с реальным видом за окном и стильным интерьером.</p>
+            <div class="ba-grid">
+                <div class="ba-card">
+                    <div class="label">До</div>
+                    <img src="photo-1.jpg" alt="Коробка квартиры">
+                    <div class="desc">Фото бетонной коробки с окном</div>
+                </div>
+                <div class="ba-card">
+                    <div class="label">После</div>
+                    <img src="photo-2.jpg" alt="Интерьер в стиле бохо">
+                    <div class="desc">Бохо-стиль, тёплый вечер, реальный вид за окном</div>
+                </div>
+                <div class="ba-card">
+                    <div class="label">До</div>
+                    <img src="photo-1.jpg" alt="Коробка квартиры">
+                    <div class="desc">Та же коробка</div>
+                </div>
+                <div class="ba-card">
+                    <div class="label">После</div>
+                    <img src="photo-3.jpg" alt="Интерьер в современном стиле">
+                    <div class="desc">Современный минимализм, дневной свет</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contacts">
+            <h2>Свяжитесь с нами</h2>
+            <p>Без форм и заявок — просто напишите или позвоните. Обсудим ваш проект и покажем примеры.</p>
+            <div class="contacts-links">
+                <a href="tel:+79990000000">+7 999 000-00-00</a>
+                <a href="mailto:hello@archai.ru">hello@archai.ru</a>
+                <a href="https://t.me/archai" target="_blank">Telegram</a>
+                <a href="https://wa.me/79990000000" target="_blank">WhatsApp</a>
+            </div>
+        </section>
+
+        <footer>
+            © 2026 ArchAI. Интерьерные карточки из фото коробки.
+        </footer>
+    </div>
+</body>
+</html>
